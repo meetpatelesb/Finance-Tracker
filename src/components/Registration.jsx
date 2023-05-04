@@ -1,4 +1,4 @@
-import "./Registration.css";
+import "../assets/styles/transaction.css";
 
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -149,7 +149,7 @@ const Registration = () => {
           </button>
           <br></br>
         </form>
-        <Link to={"/login"} className="loginBtn">
+        <Link to={"/public/login"} className="loginBtn">
           Login
         </Link>
       </div>

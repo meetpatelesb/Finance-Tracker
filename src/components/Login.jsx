@@ -1,11 +1,12 @@
-import "./Registration.css";
+import "../assets/styles/login.css";
 
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
+import { result } from "../utils/helper";
 
-const   Login = () => {
+const Login = () => {
   const registrationData = JSON.parse(localStorage.getItem("registration"));
 
   const navigate = useNavigate();
@@ -24,7 +25,6 @@ const   Login = () => {
       return { ...prev, [name]: value };
     });
 
-
     setError(validate(loginData));
   };
 
@@ -41,14 +41,13 @@ const   Login = () => {
       error.password = "password is required";
     } else {
       for (const key in registrationData) {
-
         if (
           registrationData[key].email !== loginData.email ||
           registrationData[key].password !== loginData.password
         ) {
           error.login = "email & password is not correct";
           break;
-        }else{
+        } else {
           // error.login = ""
           setError((prev) => {
             return {
@@ -62,14 +61,13 @@ const   Login = () => {
     }
     return error;
   };
- 
+
   const submitHandler = (e) => {
     e.preventDefault();
     hasChange(e);
-//  setError(validate(loginData));
+    //  setError(validate(loginData));
     // setIsSubmit(true);
   };
-
 
   useEffect(() => {
     if (Object.keys(error).length === 0) {
@@ -85,20 +83,8 @@ const   Login = () => {
       }
 
       if (flag === true) {
-        let result = "";
-        const characters =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        const charactersLength = characters.length;
-        let counter = 0;
-        while (counter < 17) {
-          result += characters.charAt(
-            Math.floor(Math.random() * charactersLength)
-          );
-          counter += 1;
-        }
         loginData["token"] = result;
         localStorage.setItem("logindata", JSON.stringify(loginData));
-
         navigate("/transaction");
       }
     }
@@ -135,7 +121,7 @@ const   Login = () => {
           </button>
           <br></br>
         </form>
-        <Link to={"/"} className="loginBtn">
+        <Link to={"/public/registration"} className="loginBtn">
           Registration
         </Link>
       </div>

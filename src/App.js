@@ -1,18 +1,19 @@
-import  Auth from './components/auth/Auth';
-import Unauth from './components/auth/Unauth';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import  Auth from './auth/Auth';
+import Unauth from './auth/Unauth';
+import "./assets/styles/transaction.css";
+import { BrowserRouter, Route, Routes,Navigate } from "react-router-dom";
 
 
 const  App = ()=> {
  
   return (
-        <BrowserRouter>
-          <Routes>
-            <Route path="/public/*" element={<Unauth />} />
-            <Route path="/*" element={<Auth />} />
-            
-          </Routes>
-        </BrowserRouter>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/public/*" element={<Unauth />} />
+        <Route path="/*" element={<Auth />} />
+        <Route path="/*" element={<Navigate to="/public/login" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

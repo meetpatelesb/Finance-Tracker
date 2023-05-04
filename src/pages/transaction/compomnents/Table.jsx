@@ -1,21 +1,8 @@
 import React from "react";
-import Pagination from "./Pagination";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-const months = [
-  "January 2023",
-  "February 2023",
-  "March 2023",
-  "April 2023",
-  "May 2023",
-  "June 2023",
-  "July 2023",
-  "August 2023",
-  "September 2023",
-  "October 2023",
-  "November 2023",
-  "December 2023",
-];
+import { formatter } from "../../../utils/helper";
+import { MonthArr } from "../../../utils/constant";
 
 const Table = (props) => {
   let records = props.records;
@@ -77,15 +64,15 @@ const Table = (props) => {
       if (sortedField.direction === "ascending") {
         newData.sort((a, b) => {
           return (
-            months.indexOf(a[sortedField?.key]?.value) -
-            months.indexOf(b[sortedField?.key]?.value)
+            MonthArr.indexOf(a[sortedField?.key]?.value) -
+            MonthArr.indexOf(b[sortedField?.key]?.value)
           );
         });
       } else if (sortedField.direction === "descending") {
         newData.sort((a, b) => {
           return (
-            months.indexOf(b[sortedField?.key]?.value) -
-            months.indexOf(a[sortedField?.key]?.value)
+            MonthArr.indexOf(b[sortedField?.key]?.value) -
+            MonthArr.indexOf(a[sortedField?.key]?.value)
           );
         });
       }
@@ -120,13 +107,14 @@ const Table = (props) => {
     console.log(e.target.value);
     console.log(records);
 
-    let removeRecords = [...records]
+    // let removeRecords = [...records];
     // delete index.receipt
     if (e.target.value === "") {
       setSortedData(records);
     } else {
-      let searchData = records.filter((index) => (
-        index.fromAccount.value.toLowerCase().includes(e.target.value) ||
+      let searchData = records.filter(
+        (index) =>
+          index.fromAccount.value.toLowerCase().includes(e.target.value) ||
           index.monthYear.value.toLowerCase().includes(e.target.value) ||
           index.notes.value.toLowerCase().includes(e.target.value) ||
           index.toAccount.value.toLowerCase().includes(e.target.value) ||
@@ -134,20 +122,19 @@ const Table = (props) => {
           index.transactionType.value.toLowerCase().includes(e.target.value) ||
           index.transactionAmount.value.toLowerCase().includes(e.target.value)
         // console.log(index.id,index.receipt)
-        
-        
-          // console.log(index['id'])
-       ) );
-        // for (let field in index) {
-        //   console.log(index[field]);
-        //   console.log(index[field].value);
-        //   if (index[field] !== "receipt"){
-        //   if(index[field].value !== undefined){
 
-        //     index[field].value.toLowerCase().includes(e.target.value);
-        //   }
-        // }
-        // }
+        // console.log(index['id'])
+      );
+      // for (let field in index) {
+      //   console.log(index[field]);
+      //   console.log(index[field].value);
+      //   if (index[field] !== "receipt"){
+      //   if(index[field].value !== undefined){
+
+      //     index[field].value.toLowerCase().includes(e.target.value);
+      //   }
+      // }
+      // }
       console.log(searchData);
       setSortedData(searchData);
     }
@@ -158,7 +145,6 @@ const Table = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage, setPostPerPage] = useState(2);
 
-  
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
   let pagiData = [...sortedData];
@@ -170,7 +156,6 @@ const Table = (props) => {
     pages.push(i);
   }
   let nThPage = pages.length;
-
 
   return (
     <>
@@ -245,12 +230,7 @@ const Table = (props) => {
                 <td>{transaction.transactionType.value}</td>
                 <td>{transaction.fromAccount.value}</td>
                 <td>{transaction.toAccount.value}</td>
-                <td>
-                  {Intl.NumberFormat("en-IN", {
-                    style: "currency",
-                    currency: "INR",
-                  }).format(transaction.transactionAmount.value)}
-                </td>
+                <td>{formatter.format(transaction.transactionAmount.value)}</td>
                 <td>
                   <img
                     src={transaction.receipt.value}

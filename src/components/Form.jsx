@@ -1,8 +1,9 @@
-import "./Form.css";
+import "../assets/styles/transaction.css";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { MonthArr, TransactionTypeArr,AccountArr } from "../utils/constant";
 
 // const getTransactionDetails = () => {
 //   const storeDetails = localStorage.getItem("transactionForm");
@@ -100,7 +101,7 @@ const TransactonForm = () => {
         break;
       }
     }
-    // esline-disable-next-line
+   //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // useEffect(() => {
@@ -534,32 +535,6 @@ const TransactonForm = () => {
       console.log("error existed");
     }
   };
-
-  const MonthArr = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const TransactionTypeArr = ["Home Expense", "Personal Expense", "Income"];
-  const AccountArr = [
-    "Personal Account",
-    "Real Living",
-    "My Dream Home",
-    "Full Circle",
-    "Core Realtors",
-    "Big Block",
-  ];
-
   return (
     <>
       <div className="form">
@@ -714,7 +689,7 @@ const TransactonForm = () => {
                   onChange={(e) => {
                     ReceiptHandler(e);
                   }}
-                ></input> 
+                ></input>
                 <span onClick={removeImage} className="cross">
                   X
                 </span>
