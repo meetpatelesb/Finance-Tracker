@@ -72,9 +72,7 @@ const   Login = () => {
 
 
   useEffect(() => {
-   
-    if (Object.keys(error).length === 0 ) {
-    
+    if (Object.keys(error).length === 0) {
       let flag = false;
       for (const key in registrationData) {
         if (
@@ -104,7 +102,7 @@ const   Login = () => {
         navigate("/transaction");
       }
     }
-    
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
   return (
     <>

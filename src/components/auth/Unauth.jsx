@@ -10,6 +10,7 @@ const Unauth = () => {
     if (token) {
       navigate("/transaction");
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>

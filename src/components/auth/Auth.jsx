@@ -10,9 +10,10 @@ const Auth = () => {
   const token = JSON.parse(localStorage.getItem("logindata"));
   const navigate = useNavigate();
   useEffect(()=>{
-    if(!token){
+    if (!token) {
       navigate("/public/login");
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   
   return (
