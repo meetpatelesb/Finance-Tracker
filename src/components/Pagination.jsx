@@ -1,16 +1,12 @@
-
-import React from 'react'
-import { useState } from 'react';
+import React from "react";
 
 const Pagination = (props) => {
-
- const currentPage = props.currentPage;
- const pages = props.pages;
- const nThPage = props.nThPage;
- const setCurrentPage = props.setCurrentPage;
+  const currentPage = props.currentPage;
+  const pages = props.pages;
+  const nThPage = props.nThPage;
+  const setCurrentPage = props.setCurrentPage;
 
   return (
-  
     <div>
       <div className="pagination">
         <button
@@ -23,7 +19,6 @@ const Pagination = (props) => {
         >
           Prev
         </button>
-
         {pages.map((page, index) => {
           return (
             <button
@@ -52,6 +47,6 @@ const Pagination = (props) => {
       ;
     </div>
   );
-}
+};
 
 export default Pagination;

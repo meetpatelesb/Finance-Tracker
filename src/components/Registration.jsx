@@ -24,25 +24,6 @@ const Registration = () => {
     setError(validate(regData));
   };
 
-  //   if(localStorage.getItem("registration")){
-  // const retriveEmail = localStorage.getItem("registration");
-  // for (const key in retriveEmail) {
-  //   if (retriveEmail[key].email !== regData.email) {
-  //     error.regEmail = "email already registered!!";
-  //     break;
-  //   } else {
-  //     // error.login = ""
-  //     setError((prev) => {
-  //       return {
-  //         ...prev,
-  //         regEmail: "",
-  //       };
-  //     });
-  //     break;
-  //   }
-  // }
-  //   }
-
   const validate = (regData) => {
     const error = {};
     const regex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
@@ -57,26 +38,6 @@ const Registration = () => {
       if (regData["password"].length <= 4) {
         error.password = "password is required";
       }
-
-      // if (localStorage?.getItem("registration")) {
-      //   const retriveEmail = localStorage.getItem("registration");
-      //   for (const key in retriveEmail) {
-      //     console.log(retriveEmail[key].email === regData["email"]);
-      //     if (retriveEmail[key].email === regData['email']) {
-      //       error.regEmail = "email already registered!!";
-      //       break;
-      //     } else {
-      //       // error.login = ""
-      //       setError((prev) => {
-      //         return {
-      //           ...prev,
-      //           regEmail: "",
-      //         };
-      //       });
-      //       break;
-      //     }
-      //   }
-      // }
     }
     return error;
   };

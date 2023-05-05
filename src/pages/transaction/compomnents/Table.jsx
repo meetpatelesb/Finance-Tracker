@@ -144,6 +144,7 @@ const Table = (props) => {
   const pageCount = (e)=>{
     let count  = e.target.value;
     setPostPerPage(count)
+    setCurrentPage(1)
   }
 
   return (

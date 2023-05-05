@@ -11,7 +11,7 @@ const  App = ()=> {
       <Routes>
         <Route path="/public/*" element={<Unauth />} />
         <Route path="/*" element={<Auth />} />
-        <Route path="/*" element={<Navigate to="/public/login" replace />} />
+        <Route path="/*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

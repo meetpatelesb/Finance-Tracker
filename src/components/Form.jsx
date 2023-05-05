@@ -6,48 +6,10 @@ import { Link } from "react-router-dom";
 import { MonthArr, TransactionTypeArr, AccountArr } from "../utils/constant";
 import { Dropdown } from "./Dropdown";
 
-// const getTransactionDetails = () => {
-//   const storeDetails = localStorage.getItem("transactionForm");
-//   if (!storeDetails)
-//     return {
-//       transactionDate: "",
-//       monthYear: "",
-//       transactionType: "",
-//       fromAccount: "",
-//       toAccount: "",
-//       transactionAmount: "",
-//       receipt: "",
-//       notes: "",
-//     };
-//   return JSON.stringify(storeDetails);
-// };
-const TransactonForm = () => {
+const TransactionForm = () => {
   const { id } = useParams();
   const index = id - 1;
   const updateData = JSON.parse(localStorage.getItem("transactionForm"));
-
-  // const [details, setDetails] = useState({
-  //   transactionDate: "",
-  //   monthYear: "",
-  //   transactionType: "",
-  //   fromAccount: "",
-  //   toAccount: "",
-  //   transactionAmount: "",
-  //   receipt: "",
-  //   notes: "",
-  // });
-
-  // const [error, setError] = useState({
-  //   transactionDate: "",
-  //   monthYear: "",
-  //   transactionType: "",
-  //   fromAccount: "",
-  //   toAccount: "",
-  //   transactionAmount: "",
-  //   receipt: "",
-  //   notes: "",
-  // });
-
   const formDetails = {
     monthYear: {
       value: "",
@@ -105,42 +67,9 @@ const TransactonForm = () => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // useEffect(() => {
-  //   localStorage.setItem("transactionForm", JSON.stringify(data));
-  // }, [data]);
-
-  // useEffect(()=>{
-
-  // })
-
-  //   const hasChange = (e) => {
-  //     const { name, value } = e.target;
-  //     console.log(name, value);
-  //     setDetails(
-  //       { ...details, [name]: value }
-  // //       (prev)=>{
-  // // return( {...prev,[name]:value})
-  // //     }
-  //     );
-  //   };
-
-  // const hasChange =(e)=>{
-  //   const {name,value} = e.target;
-  //   setDetails((prev)=>{
-  //   return {...prev, [name]:value}
-  // })
-  // }
   // onchange functions
   const DateHandler = (e) => {
     const date = e;
-    // setData((prev) => ({
-    //   ...prev,
-    //   transactionDate: {
-    //     ...prev.transactionDate,
-    //     value: date,
-    //   },
-    // }));
-
     if (date) {
       setData((prev) => ({
         ...prev,
@@ -200,13 +129,6 @@ const TransactonForm = () => {
 
   const TypeHandler = (e) => {
     const type = e;
-    // setData((prev) => ({
-    //   ...prev,
-    //   transactionType: {
-    //     ...prev.transactionType,
-    //     value: type,
-    //   },
-    // }));
     if (type) {
       if (type === "Select") {
         setData((prev) => ({
@@ -242,13 +164,6 @@ const TransactonForm = () => {
 
   const FromActHandler = (e) => {
     const FromAcc = e;
-    // setData((prev) => ({
-    //   ...prev,
-    //   fromAccount: {
-    //     ...prev.fromAccount,
-    //     value: FromAcc,
-    //   },
-    // }));
     if (FromAcc) {
       if (FromAcc === "Select") {
         setData((prev) => ({
@@ -284,14 +199,6 @@ const TransactonForm = () => {
 
   const toActHandler = (e) => {
     const ToAcc = e;
-
-    // setData((prev) => ({
-    //   ...prev,
-    //   toAccount: {
-    //     ...prev.toAccount,
-    //     value: ToAcc,
-    //   },
-    // }));
     if (ToAcc) {
       if (ToAcc === "Select") {
         setData((prev) => ({
@@ -396,14 +303,6 @@ const TransactonForm = () => {
               },
             }));
             setReceipt(true);
-
-            // setData((prev) => ({
-            //   ...prev,
-            //   receipt: {
-            //     ...prev.receipt,
-            //     error: "",
-            //   },
-            // }));
           });
         }
       }
@@ -463,7 +362,6 @@ const TransactonForm = () => {
   };
 
   const removeImage = () => {
-    // setData(...data,data.receipt.value="")
 
     setData((prev) => ({
       ...prev,
@@ -716,4 +614,4 @@ const TransactonForm = () => {
   );
 };
 
-export default TransactonForm;
+export default TransactionForm;

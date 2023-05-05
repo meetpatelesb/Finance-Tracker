@@ -24,7 +24,6 @@ const Login = () => {
     setRegData((prev) => {
       return { ...prev, [name]: value };
     });
-
     setError(validate(loginData));
   };
 
