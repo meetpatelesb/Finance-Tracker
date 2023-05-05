@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { formatter } from "../../../utils/helper";
 import { MonthArr, paginationCount } from "../../../utils/constant";
 import { Dropdown } from "../../../components/Dropdown";
+import Pagination from "../../../components/Pagination";
 
 const Table = (props) => {
   let records = props.records;
@@ -24,7 +25,6 @@ const Table = (props) => {
       direction = "normal";
     }
     setSortedField({ key, direction });
-    console.log(key, "keyyy2", direction);
   };
 
   useEffect(() => {
@@ -105,11 +105,7 @@ const Table = (props) => {
   // searching.....
 
   const search = (e) => {
-    console.log(e.target.value);
-    console.log(records);
-
-    // let removeRecords = [...records];
-    // delete index.receipt
+      setCurrentPage(1);
     if (e.target.value === "") {
       setSortedData(records);
     } else {
@@ -122,21 +118,7 @@ const Table = (props) => {
           index.transactionDate.value.toLowerCase().includes(e.target.value) ||
           index.transactionType.value.toLowerCase().includes(e.target.value) ||
           index.transactionAmount.value.toLowerCase().includes(e.target.value)
-        // console.log(index.id,index.receipt)
-
-        // console.log(index['id'])
       );
-      // for (let field in index) {
-      //   console.log(index[field]);
-      //   console.log(index[field].value);
-      //   if (index[field] !== "receipt"){
-      //   if(index[field].value !== undefined){
-
-      //     index[field].value.toLowerCase().includes(e.target.value);
-      //   }
-      // }
-      // }
-      console.log(searchData);
       setSortedData(searchData);
     }
   };
@@ -161,7 +143,6 @@ const Table = (props) => {
 
   const pageCount = (e)=>{
     let count  = e.target.value;
-    console.log(count,"count");
     setPostPerPage(count)
   }
 
@@ -268,51 +249,20 @@ const Table = (props) => {
       <select
         className="page-count"
         onChange={(e) => {
-        pageCount(e);
+          pageCount(e);
         }}
       >
         <Dropdown for={paginationCount} />
       </select>
 
-      {/* <Pagination paginationRecords={sortedData}/> */}
-
-      <div className="pagination">
-        <button
-          className="page"
-          onClick={() => {
-            if (currentPage !== 1) {
-              setCurrentPage(currentPage - 1);
-            }
-          }}
-        >
-          Prev
-        </button>
-
-        {pages.map((page, index) => {
-          return (
-            <button
-              key={index}
-              className={page === currentPage ? "active" : "page"}
-              onClick={() => {
-                setCurrentPage(page);
-              }}
-            >
-              {page}
-            </button>
-          );
-        })}
-
-        <button
-          className="page"
-          onClick={() => {
-            if (currentPage !== nThPage) {
-              setCurrentPage(currentPage + 1);
-            }
-          }}
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        paginationRecords={sortedData}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        pages={pages}
+        nThPage={nThPage}
+        setPostPerPage={setPostPerPage}
+      />
     </>
   );
 };

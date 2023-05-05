@@ -11,8 +11,6 @@ const Transaction = () => {
 
   const groupBy = (e) => {
     let field = e.target.value;
-    console.log("filed", field);
-
     const gData = [...retrivedata];
 
     let groupData = {};
@@ -20,8 +18,6 @@ const Transaction = () => {
       setGroupby(groupData);
     } else {
       gData.forEach((items) => {
-        console.log("value");
-        console.log(items[field]?.value);
         const item = items[field]?.value;
         groupData[item] = groupData[item] ?? [];
         groupData[item].push(items);

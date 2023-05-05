@@ -86,8 +86,6 @@ const Registration = () => {
     hasChange(e);
     setError(validate(regData));
     setIsSubmit(true);
-    console.log(error);
-    console.log(Object.keys(error).length);
     if (Object.keys(error).length === 0 && issubmit === true) {
       console.log("submit");
 
@@ -95,7 +93,6 @@ const Registration = () => {
         const retrivedata = JSON.parse(localStorage.getItem("registration"));
         let lastIdIndex = Object.keys(retrivedata).length - 1;
         let lastId = retrivedata[lastIdIndex].id;
-        console.log(retrivedata);
         regData["id"] = lastId + 1;
         retrivedata.push(regData);
         localStorage.setItem("registration", JSON.stringify(retrivedata));

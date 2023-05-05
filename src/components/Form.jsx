@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { MonthArr, TransactionTypeArr,AccountArr } from "../utils/constant";
+import { MonthArr, TransactionTypeArr, AccountArr } from "../utils/constant";
+import { Dropdown } from "./Dropdown";
 
 // const getTransactionDetails = () => {
 //   const storeDetails = localStorage.getItem("transactionForm");
@@ -101,7 +102,7 @@ const TransactonForm = () => {
         break;
       }
     }
-   //eslint-disable-next-line react-hooks/exhaustive-deps
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // useEffect(() => {
@@ -589,10 +590,6 @@ const TransactonForm = () => {
                   <option value={`${month} 2023`}>{`${month} 2023`}</option>
                 );
               })}
-
-              {/* <option value="Jan 2023">Jan 2023</option>
-                <option value="Feb 2023">Feb 2023</option>
-                */}
             </select>
             <span>{data.monthYear.error}</span>
           </div>
@@ -609,9 +606,7 @@ const TransactonForm = () => {
               <option value="select" selected>
                 Select
               </option>
-              {TransactionTypeArr.map((type) => {
-                return <option value={`${type}`}>{type}</option>;
-              })}
+              <Dropdown for={TransactionTypeArr} />
             </select>
             <span>{data.transactionType.error}</span>
           </div>
@@ -629,9 +624,7 @@ const TransactonForm = () => {
               <option value="select" selected>
                 Select
               </option>
-              {AccountArr.map((account) => {
-                return <option value={account}>{account}</option>;
-              })}
+              <Dropdown for={AccountArr} />
             </select>
             <span>{data.fromAccount.error}</span>
           </div>
@@ -649,10 +642,7 @@ const TransactonForm = () => {
               <option value="select" selected>
                 Select
               </option>
-
-              {AccountArr.map((account) => {
-                return <option value={account}>{account}</option>;
-              })}
+              <Dropdown for={AccountArr} />
             </select>
             <span>{data.toAccount.error}</span>
           </div>

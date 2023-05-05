@@ -1,14 +1,13 @@
-import React from 'react'
+import React from "react";
 
-export  const Dropdown = (props) => {
-  console.log(props);
+export const Dropdown = (props) => {
   return (
     <>
-        {props.for.map((field) => (
-          <>
-            <option value={field}>{field}</option>
-          </>
-        ))}
+      {props.for.map((field) => (
+        <>
+          <option value={field}>{field} </option>
+        </>
+      ))}
     </>
   );
-}
+};
