@@ -30,3 +30,5 @@ export const AccountArr = [
    "fromAccount",
    "toAccount",
  ];
+
+ export const paginationCount = [1,2,3,4,5]

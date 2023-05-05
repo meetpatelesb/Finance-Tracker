@@ -130,11 +130,15 @@ color: black;
   margin-left: 70%;
   padding: 5px 12px;
 }
-
-
+.page-count{
+  width: 60px;
+  padding: 3px 6px;
+}
+.groupby{
+   width: 150px;
+  padding: 3px 6px;
+}
 /* view */
-
-@import url("https://fonts.googleapis.com/css2?family=Quando&display=swap");
 
 .container {
   border: 2px solid rgb(49, 49, 49);
@@ -174,3 +178,5 @@ span {
   margin-left: 15px;
   color: brown;
 }
+
+

@@ -2,7 +2,8 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { formatter } from "../../../utils/helper";
-import { MonthArr } from "../../../utils/constant";
+import { MonthArr, paginationCount } from "../../../utils/constant";
+import { Dropdown } from "../../../components/Dropdown";
 
 const Table = (props) => {
   let records = props.records;
@@ -157,6 +158,13 @@ const Table = (props) => {
   }
   let nThPage = pages.length;
 
+
+  const pageCount = (e)=>{
+    let count  = e.target.value;
+    console.log(count,"count");
+    setPostPerPage(count)
+  }
+
   return (
     <>
       <input
@@ -255,6 +263,17 @@ const Table = (props) => {
             ))}
         </tbody>
       </table>
+
+      <label>Post Per Page:</label>
+      <select
+        className="page-count"
+        onChange={(e) => {
+        pageCount(e);
+        }}
+      >
+        <Dropdown for={paginationCount} />
+      </select>
+
       {/* <Pagination paginationRecords={sortedData}/> */}
 
       <div className="pagination">
