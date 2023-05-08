@@ -1,8 +1,8 @@
 import "../assets/styles/login.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect, React } from "react";
+import { useState, useEffect,React } from "react";
 import { result } from "../utils/helper";
-import * as yup from "yup";
+import * as yup from 'yup'; 
 import formSchema from "./../Validations/UserValidation";
 
 const Login = () => {
@@ -27,44 +27,47 @@ const Login = () => {
   };
 
   const validate = (loginData) => {
+
     const error = {};
 
     const regex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
-    if (registrationData) {
-      if (!regex?.test(loginData["email"])) {
-        error.email = "email is required";
-      }
-
-      if (loginData["password"]?.length <= 4) {
-        error.password = "password is required";
-      } else {
-        for (const key in registrationData) {
-          if (
-            registrationData[key].email !== loginData.email ||
-            registrationData[key].password !== loginData.password
-          ) {
-            error.login = "email & password is not correct";
-            break;
-          } else {
-            // error.login = ""
-            setError((prev) => {
-              return {
-                ...prev,
-                login: "",
-              };
-            });
-            break;
+    if(registrationData){
+      
+          if (!regex?.test(loginData["email"])) {
+            error.email = "email is required";
           }
-        }
-      }
-      return error;
-    } else {
-      error.login = "first register your self";
-      return error;
+      
+          if (loginData["password"]?.length <= 4) {
+            error.password = "password is required";
+          } else {
+            for (const key in registrationData) {
+              if (
+                registrationData[key].email !== loginData.email ||
+                registrationData[key].password !== loginData.password
+              ) {
+                error.login = "email & password is not correct";
+                break;
+              } else {
+                // error.login = ""
+                setError((prev) => {
+                  return {
+                    ...prev,
+                    login: "",
+                  };
+                });
+                break;
+              }
+            }
+          }
+ return error;
+    }else{
+error.login = "first register your self";
+return error;
     }
+   
   };
 
-  const submitHandler = async (e) => {
+  const submitHandler = async(e) => {
     e.preventDefault();
     hasChange(e);
     // console.log(e.target[0].value,"name");
@@ -74,7 +77,7 @@ const Login = () => {
     //   password:e.target[1].value
     // }
     // //  setError(validate(loginData));
-    // const isValidate = await formSchema.isValid(userData);
+    // const isValidate = await formSchema.isValid(userData);  
     // // setIsSubmit(true);
     // console.log(isValidate,"massege");
   };

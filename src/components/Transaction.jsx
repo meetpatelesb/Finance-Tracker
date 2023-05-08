@@ -10,19 +10,23 @@ const Transaction = () => {
   const [groupby, setGroupby] = useState({});
 
   const groupBy = (e) => {
-    let field = e.target.value;
-    const gData = [...retrivedata];
-
-    let groupData = {};
-    if (field === "none") {
-      setGroupby(groupData);
-    } else {
-      gData.forEach((items) => {
-        const item = items[field]?.value;
-        groupData[item] = groupData[item] ?? [];
-        groupData[item].push(items);
+    if(retrivedata){
+      let field = e.target.value;
+      console.log(field,"field");
+      const gData = [...retrivedata];
+  
+      let groupData = {};
+      if (field === "none") {
         setGroupby(groupData);
-      });
+      } else {
+        gData.forEach((items) => {
+          const item = items[field]?.value;
+          groupData[item] = groupData[item] ?? [];
+          groupData[item].push(items);
+          setGroupby(groupData);
+          console.log(groupData,"GROUPBY DATA");
+        });
+      }
     }
   };
 
@@ -46,7 +50,7 @@ const Transaction = () => {
           </select>
         </>
 
-        <Table records={retrivedata} />
+        <div>{retrivedata && <Table records={retrivedata} />}</div>
 
         <button className="createBtn">
           <Link to={"/create"}>Create Transaction</Link>

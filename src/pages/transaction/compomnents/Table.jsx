@@ -9,7 +9,7 @@ import Pagination from "../../../components/Pagination";
 const Table = (props) => {
   let records = props.records;
 
-  let [sortedData, setSortedData] = useState(records);
+  const [sortedData, setSortedData] = useState(records);
   const [sortedField, setSortedField] = useState({});
 
   const sorting = (key) => {
