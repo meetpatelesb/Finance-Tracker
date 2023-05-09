@@ -32,3 +32,12 @@ export const AccountArr = [
  ];
 
  export const paginationCount = [1,2,3,4,5]
+
+  export const MAX_FILE_SIZE = 10240;
+
+  export const validFileExtensions = [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "image/svg",
+  ];

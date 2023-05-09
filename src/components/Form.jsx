@@ -3,59 +3,90 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { MonthArr, TransactionTypeArr, AccountArr } from "../utils/constant";
+import {
+  MonthArr,
+  TransactionTypeArr,
+  AccountArr,
+  MAX_FILE_SIZE,
+  validFileExtensions,
+} from "../utils/constant";
 import { Dropdown } from "./Dropdown";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 
 const TransactionForm = () => {
   const { id } = useParams();
   const index = id - 1;
   const updateData = JSON.parse(localStorage.getItem("transactionForm"));
-  const formDetails = {
-    monthYear: {
-      value: "",
-      error: "",
-    },
-    transactionDate: {
-      value: "",
-      error: "",
-    },
-    transactionType: {
-      value: "",
-      error: "",
-    },
-    fromAccount: {
-      value: "",
-      error: "",
-    },
-    toAccount: {
-      value: "",
-      error: "",
-    },
-    transactionAmount: {
-      value: "",
-      error: "",
-    },
+  const [value, setvalue] = useState({});
+  const [photo, setPhoto] = useState();
+  const [data, setData] = useState({
     receipt: {
       value: "",
-      error: "",
     },
-    notes: {
-      value: "",
-      error: "",
-    },
-  };
-
-  const [data, setData] = useState(formDetails);
-  const [isDate, setDate] = useState(false);
-  const [isMonth, setMonth] = useState(false);
-  const [isAmount, setAmount] = useState(false);
-  const [isFromAcc, setFromAcc] = useState(false);
-  const [isToAcc, setToAcc] = useState(false);
-  const [isNote, setNote] = useState(false);
-  const [isReceipt, setReceipt] = useState(false);
-  const [isType, setType] = useState(false);
+  });
 
   const navigate = useNavigate();
+
+  // YUP VALIDATIONS...
+
+  const formSchema = yup.object().shape({
+    transactionDate: yup.string().required("Transaction Date is required!!"),
+    monthYear: yup.string().required("month year is required!!"),
+    transactionType: yup.string().required("transaction type is required!!"),
+    fromAccount: yup
+      .string()
+      // .notOneOf([yup.ref("toAccount"), null], "To Account is  matched!!")
+      .required("account is required!!"),
+    toAccount: yup
+      .string()
+      .notOneOf([yup.ref("fromAccount"), null], "From Account is  matched!!")
+      .required("account is required!!"),
+    transactionAmount: yup
+      .number()
+      .integer()
+      .positive()
+      .min(2, "minimum amount should be 10")
+      .required()
+      .typeError("amount is required!!"),
+    notes: yup
+      .string()
+      .min(3)
+      .max(250)
+      .required()
+      .typeError("notes is required!!"),
+    receipt: yup.mixed().test({
+      name: "is-sku",
+      skipAbsent: true,
+      test(value, error) {
+        if (value === undefined || value === null || value.length === 0) {
+          return error.createError({ message: "image is required!!!" });
+        } else {
+          if (!validFileExtensions.includes(value[0].type)) {
+            return error.createError({
+              message: "image type must be jpeg,png,jpg or svg..",
+            });
+          }
+          if (value[0]["size"] > MAX_FILE_SIZE) {
+            return error.createError({ message: "image must less than 10kb" });
+          }
+        }
+        return true;
+      },
+    }),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(formSchema),
+  });
+
+  // ......
 
   useEffect(() => {
     for (const key in updateData) {
@@ -67,302 +98,7 @@ const TransactionForm = () => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // onchange functions
-  const DateHandler = (e) => {
-    const date = e;
-    if (date) {
-      setData((prev) => ({
-        ...prev,
-        transactionDate: {
-          ...prev.transactionDate,
-          value: date,
-          error: "",
-        },
-      }));
-      setDate(true);
-    } else {
-      setData((prev) => ({
-        ...prev,
-        transactionDate: {
-          ...prev.transactionDate,
-          error: "date is Requierd!!",
-        },
-      }));
-      setDate(false);
-    }
-  };
-
-  const MonthHandler = (e) => {
-    const month = e;
-    if (month) {
-      if (month === "Select") {
-        setData((prev) => ({
-          ...prev,
-          monthYear: {
-            ...prev.monthYear,
-            error: "Month is Required!!",
-          },
-        }));
-        setMonth(false);
-      } else {
-        setData((prev) => ({
-          ...prev,
-          monthYear: {
-            ...prev.monthYear,
-            value: month,
-            error: "",
-          },
-        }));
-        setMonth(true);
-      }
-    } else {
-      setData((prev) => ({
-        ...prev,
-        monthYear: {
-          ...prev.monthYear,
-          error: "Month is Required!!",
-        },
-      }));
-      setMonth(false);
-    }
-  };
-
-  const TypeHandler = (e) => {
-    const type = e;
-    if (type) {
-      if (type === "Select") {
-        setData((prev) => ({
-          ...prev,
-          transactionType: {
-            ...prev.transactionType,
-            error: "type is Required!!",
-          },
-        }));
-      } else {
-        setType(false);
-        setData((prev) => ({
-          ...prev,
-          transactionType: {
-            ...prev.transactionType,
-            value: type,
-            error: "",
-          },
-        }));
-        setType(true);
-      }
-    } else {
-      setData((prev) => ({
-        ...prev,
-        transactionType: {
-          ...prev.transactionType,
-          error: "type is Required!!",
-        },
-      }));
-      setType(false);
-    }
-  };
-
-  const FromActHandler = (e) => {
-    const FromAcc = e;
-    if (FromAcc) {
-      if (FromAcc === "Select") {
-        setData((prev) => ({
-          ...prev,
-          fromAccount: {
-            ...prev.fromAccount,
-            error: "Account is Required!!",
-          },
-        }));
-        setFromAcc(false);
-      } else {
-        setData((prev) => ({
-          ...prev,
-          fromAccount: {
-            ...prev.fromAccount,
-            value: FromAcc,
-            error: "",
-          },
-        }));
-        setFromAcc(true);
-      }
-    } else {
-      setData((prev) => ({
-        ...prev,
-        fromAccount: {
-          ...prev.fromAccount,
-          error: "Account is Required",
-        },
-      }));
-      setFromAcc(false);
-    }
-  };
-
-  const toActHandler = (e) => {
-    const ToAcc = e;
-    if (ToAcc) {
-      if (ToAcc === "Select") {
-        setData((prev) => ({
-          ...prev,
-          toAccount: {
-            ...prev.toAccount,
-            error: "Account is Required!!",
-          },
-        }));
-        setToAcc(false);
-      } else {
-        setData((prev) => ({
-          ...prev,
-          toAccount: {
-            ...prev.toAccount,
-            value: ToAcc,
-            error: "",
-          },
-        }));
-        setToAcc(true);
-      }
-    } else {
-      setData((prev) => ({
-        ...prev,
-        toAccount: {
-          ...prev.toAccount,
-          error: "Account is Required!!",
-        },
-      }));
-      setToAcc(false);
-    }
-  };
-
-  const AmountHandler = (e) => {
-    const value = e;
-    setData((prev) => ({
-      ...prev,
-      transactionAmount: {
-        ...prev.transactionAmount,
-        value: value,
-      },
-    }));
-
-    if (value) {
-      if (value.length < 2) {
-        setData((prev) => ({
-          ...prev,
-          transactionAmount: {
-            ...prev.transactionAmount,
-            error: "Amount is too short!!",
-          },
-        }));
-        setAmount(false);
-      } else {
-        setData((prev) => ({
-          ...prev,
-          transactionAmount: {
-            ...prev.transactionAmount,
-            value: value,
-            error: "",
-          },
-        }));
-        setAmount(true);
-      }
-    } else {
-      setData((prev) => ({
-        ...prev,
-        transactionAmount: {
-          ...prev.transactionAmount,
-          error: "amount is Required!!",
-        },
-      }));
-      setAmount(false);
-    }
-  };
-
-  const ReceiptHandler = (e) => {
-    if (e) {
-      if (e?.target?.type === "file") {
-        if (e?.target?.files[0]?.size > 10000) {
-          setData((prev) => ({
-            ...prev,
-            receipt: {
-              ...prev.receipt,
-              error: "Image is too large",
-            },
-          }));
-          setReceipt(false);
-        } else {
-          let freader = new FileReader();
-
-          freader.readAsDataURL(e?.target?.files[0]);
-
-          freader.addEventListener("load", () => {
-            const receiptPhoto = freader.result;
-            setData((prev) => ({
-              ...prev,
-              receipt: {
-                ...prev.receipt,
-                value: receiptPhoto,
-                error: "",
-              },
-            }));
-            setReceipt(true);
-          });
-        }
-      }
-    } else {
-      setData((prev) => ({
-        ...prev,
-        receipt: {
-          ...prev.receipt,
-          error: "Receipt is Required!!",
-        },
-      }));
-      setReceipt(false);
-    }
-  };
-
-  const NotesHandler = (e) => {
-    const notes = e;
-
-    setData((prev) => ({
-      ...prev,
-      notes: {
-        ...prev.notes,
-        value: notes,
-      },
-    }));
-
-    if (notes.trim()) {
-      if (notes.trim().length > 250 || notes.trim().length < 3) {
-        setData((prev) => ({
-          ...prev,
-          notes: {
-            ...prev.notes,
-            error: "Notes is Required!!",
-          },
-        }));
-        setNote(false);
-      } else {
-        setData((prev) => ({
-          ...prev,
-          notes: {
-            ...prev.notes,
-            error: "",
-          },
-        }));
-        setNote(true);
-      }
-    } else {
-      setData((prev) => ({
-        ...prev,
-        notes: {
-          ...prev.notes,
-          error: "Notes is Required!!",
-        },
-      }));
-      setNote(false);
-    }
-  };
-
   const removeImage = () => {
-
     setData((prev) => ({
       ...prev,
       receipt: {
@@ -371,83 +107,122 @@ const TransactionForm = () => {
       },
     }));
   };
+  let Photo;
+  const onSubmit = (e) => {
+    //  console.log(e)
+    let {
+      monthYear,
+      transactionDate,
+      transactionType,
+      fromAccount,
+      toAccount,
+      transactionAmount,
+      receipt,
+      notes,
+    } = e;
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    AmountHandler(data.transactionAmount.value);
-    DateHandler(data.transactionDate.value);
-    TypeHandler(data.transactionType.value);
-    FromActHandler(data.fromAccount.value);
-    toActHandler(data.toAccount.value);
-    NotesHandler(data.notes.value);
-    MonthHandler(data.monthYear.value);
-    ReceiptHandler(data.receipt.value);
+    // const handleChange = (e) => {
+    //   console.log(e);
+    // let freader = new FileReader();
+    // console.log(e?.target?.files[0]);
+    // freader.readAsDataURL(e?.target?.files[0]);
 
-    console.log(
-      isAmount,
-      isDate,
-      isFromAcc,
-      isMonth,
-      isNote,
-      isReceipt,
-      isToAcc,
-      isType
-    );
+    // freader.addEventListener("load", () => {
+    //   const receiptPhoto = freader.result;
+    //   console.log(receiptPhoto);
+    // });
+    // };
 
-    if (
-      isAmount &&
-      isDate &&
-      isFromAcc &&
-      isMonth &&
-      isNote &&
-      isReceipt &&
-      isToAcc &&
-      isType
-    ) {
-      if (localStorage.getItem("transactionForm")) {
-        const retrivedata = JSON.parse(localStorage.getItem("transactionForm"));
+    let insertData = {
+      monthYear: {
+        value: monthYear,
+      },
+      transactionDate: {
+        value: transactionDate,
+      },
+      transactionType: {
+        value: transactionType,
+      },
+      fromAccount: {
+        value: fromAccount,
+      },
+      toAccount: {
+        value: toAccount,
+      },
+      transactionAmount: {
+        value: transactionAmount,
+      }, 
+      notes: {
+        value: notes,
+      },
+    };
 
-        if (id) {
-          for (const e in retrivedata) {
-            if (parseInt(retrivedata[e].id) === parseInt(id)) {
-              data["id"] = id;
-              retrivedata[e] = data;
-            }
+    let receiptPhoto;
+    let file = receipt[0];
+    let freader = new FileReader();
+    freader.readAsDataURL(file);
+    freader.addEventListener("load", () => {
+      receiptPhoto = freader.result;
+      // console.log(receiptPhoto);
+      // insertData["receipt"] = { value: receiptPhoto };
+      // setData(insertData);
+
+      // 2nd appro.
+       let val = {
+         ...insertData,
+         receipt: {
+           value: receiptPhoto,
+         },
+       };
+      //  console.log(val);
+       setData(val)
+    });
+console.log(insertData);
+   console.log(data);
+
+    if (localStorage.getItem("transactionForm")) {
+      const retrivedata = JSON.parse(localStorage.getItem("transactionForm"));
+
+      if (id) {
+        for (const e in retrivedata) {
+          if (parseInt(retrivedata[e].id) === parseInt(id)) {
+            insertData["id"] = id;
+            retrivedata[e] = insertData;
           }
-        } else {
-          const prevDataIndex = Object.keys(retrivedata).length - 1;
-
-          const prevId = retrivedata[prevDataIndex]["id"];
-          data["id"] = parseInt(prevId) + 1;
-
-          retrivedata.push(data);
         }
-
-        localStorage.setItem("transactionForm", JSON.stringify(retrivedata));
       } else {
-        data["id"] = 1;
+        const prevDataIndex = Object.keys(retrivedata).length - 1;
+        const prevId = retrivedata[prevDataIndex]["id"];
+        insertData["id"] = parseInt(prevId) + 1;
 
-        localStorage.setItem("transactionForm", JSON.stringify([data]));
+        retrivedata.push(insertData);
       }
-      navigate("/transaction");
+
+      localStorage.setItem("transactionForm", JSON.stringify(retrivedata));
     } else {
-      console.log("error existed");
+      insertData["id"] = 1;
+
+      localStorage.setItem("transactionForm", JSON.stringify([insertData]));
     }
+
+    // navigate("/transaction");
   };
+
   return (
     <>
       <div className="form">
-        <form onSubmit={submitHandler} method="POST">
+        <form onSubmit={handleSubmit(onSubmit)} method="POST">
           <label className="label">Transaction Date:</label>
           <div className="input">
             <input
               type="date"
               id="date"
               name="transactionDate"
-              value={data.transactionDate.value}
-              onChange={(e) => {
-                DateHandler(e.target.value);
-              }}
+              {...register("transactionDate")}
+              // value={data.transactionDate.value}
+              // onChange={(e) => {
+              //   DateHandler(e.target.value);
+              // }}
               onClick={() => {
                 const newdate = new Date();
                 var year = newdate.getFullYear();
@@ -465,7 +240,7 @@ const TransactionForm = () => {
                 document.getElementById("date").setAttribute("max", limit);
               }}
             ></input>
-            <span>{data.transactionDate.error}</span>
+            <span>{errors.transactionDate?.message}</span>
           </div>
           <br></br>
           <label className="label">Month Year:</label>
@@ -473,13 +248,14 @@ const TransactionForm = () => {
           <div className="input">
             <select
               name="monthYear"
-              value={data.monthYear.value}
+              {...register("monthYear")}
+              // value={data.monthYear.value}
               id=""
-              onChange={(e) => {
-                MonthHandler(e.target.value);
-              }}
+              // onChange={(e) => {
+              //   MonthHandler(e.target.value);
+              // }}
             >
-              <option value="select" selected>
+              <option value="" selected>
                 Select
               </option>
 
@@ -489,24 +265,25 @@ const TransactionForm = () => {
                 );
               })}
             </select>
-            <span>{data.monthYear.error}</span>
+            <span>{errors.monthYear?.message}</span>
           </div>
           <br></br>
           <label className="label">Transaction Type:</label>
           <div className="input">
             <select
               name="transactionType"
-              value={data.transactionType.value}
-              onChange={(e) => {
-                TypeHandler(e.target.value);
-              }}
+              {...register("transactionType")}
+              // value={data.transactionType.value}
+              // onChange={(e) => {
+              //   TypeHandler(e.target.value);
+              // }}
             >
-              <option value="select" selected>
+              <option value="" selected>
                 Select
               </option>
               <Dropdown for={TransactionTypeArr} />
             </select>
-            <span>{data.transactionType.error}</span>
+            <span>{errors.transactionType?.message}</span>
           </div>
           <br></br>
 
@@ -514,17 +291,19 @@ const TransactionForm = () => {
           <div className="input">
             <select
               name="fromAccount"
-              value={data.fromAccount.value}
-              onChange={(e) => {
-                FromActHandler(e.target.value);
-              }}
+              {...register("fromAccount")}
+
+              // value={data.fromAccount.value}
+              // onChange={(e) => {
+              //   FromActHandler(e.target.value);
+              // }}
             >
-              <option value="select" selected>
+              <option value="" selected>
                 Select
               </option>
               <Dropdown for={AccountArr} />
             </select>
-            <span>{data.fromAccount.error}</span>
+            <span>{errors.fromAccount?.message}</span>
           </div>
           <br></br>
 
@@ -532,17 +311,18 @@ const TransactionForm = () => {
           <div className="input">
             <select
               name="toAccount"
-              value={data.toAccount.value}
-              onChange={(e) => {
-                toActHandler(e.target.value);
-              }}
+              {...register("toAccount")}
+              // value={data.toAccount.value}
+              // onChange={(e) => {
+              //   toActHandler(e.target.value);
+              // }}
             >
-              <option value="select" selected>
+              <option value="" selected>
                 Select
               </option>
               <Dropdown for={AccountArr} />
             </select>
-            <span>{data.toAccount.error}</span>
+            <span>{errors.toAccount?.message}</span>
           </div>
           <br></br>
           <label className="label">Amount:</label>
@@ -550,41 +330,41 @@ const TransactionForm = () => {
             <input
               type="text"
               name="transactionAmount"
-              value={data.transactionAmount.value}
-              onChange={(e) => {
-                AmountHandler(e.target.value);
-              }}
+              {...register("transactionAmount")}
+              // value={data.transactionAmount.value}
+              // onChange={(e) => {
+              //   AmountHandler(e.target.value);
+              // }}
             ></input>
-            <span>{data.transactionAmount.error}</span>
+            <span>{errors.transactionAmount?.message}</span>
           </div>
           <br></br>
           <label className="label">Receipt:</label>
           <div className="input">
-            {data.receipt.value ? (
-              <>
-                <img src={data.receipt.value} width={50} height={50} alt="" />
-                <span onClick={removeImage} className="cross">
-                  X
-                </span>
-              </>
-            ) : (
+            {
+              // data.receipt.value ? (
+              //   <>
+              //     <img src={data.receipt.value} width={50} height={50} alt="" />
+              //     <span onClick={removeImage} className="cross">
+              //       X
+              //     </span>
+              //   </>
+              // ) :
               <>
                 <input
                   type="file"
                   name="receipt"
                   alt="Receipt is not found"
-                  value={data.receipt.value}
-                  onChange={(e) => {
-                    ReceiptHandler(e);
-                  }}
+                  {...register("receipt")}
+                  // value={data.receipt.value}
+                  // onChange={(e) => {
+                  //   ReceiptHandler(e);
+                  // }}
                 ></input>
-                <span onClick={removeImage} className="cross">
-                  X
-                </span>
               </>
-            )}
+            }
 
-            <span>{data.receipt.error}</span>
+            <span>{errors.receipt?.message}</span>
           </div>
           <br></br>
           <label className="label">Notes:</label>
@@ -593,12 +373,14 @@ const TransactionForm = () => {
               cols="30"
               rows="6"
               name="notes"
-              value={data.notes.value}
-              onChange={(e) => {
-                NotesHandler(e.target.value);
-              }}
+              {...register("notes")}
+
+              // value={data.notes.value}
+              // onChange={(e) => {
+              //   NotesHandler(e.target.value);
+              // }}
             ></textarea>
-            <span>{data.notes.error}</span>
+            <span>{errors.notes?.message}</span>
           </div>
 
           <button type="submit" className="submitBtn">
