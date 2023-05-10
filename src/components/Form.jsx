@@ -19,13 +19,8 @@ const TransactionForm = () => {
   const { id } = useParams();
   const index = id - 1;
   const updateData = JSON.parse(localStorage.getItem("transactionForm"));
-  const [value, setvalue] = useState({});
-  const [photo, setPhoto] = useState();
-  const [data, setData] = useState({
-    receipt: {
-      value: "",
-    },
-  });
+  const [submit, setSubmit] = useState(false);
+  const [data, setData] = useState({});
 
   const navigate = useNavigate();
 
@@ -107,7 +102,6 @@ const TransactionForm = () => {
       },
     }));
   };
-  let Photo;
   const onSubmit = (e) => {
     //  console.log(e)
     let {
@@ -151,11 +145,13 @@ const TransactionForm = () => {
       },
       transactionAmount: {
         value: transactionAmount,
-      }, 
+      },
       notes: {
         value: notes,
       },
     };
+
+    setData(insertData);
 
     let receiptPhoto;
     let file = receipt[0];
@@ -163,50 +159,54 @@ const TransactionForm = () => {
     freader.readAsDataURL(file);
     freader.addEventListener("load", () => {
       receiptPhoto = freader.result;
-      // console.log(receiptPhoto);
+
       // insertData["receipt"] = { value: receiptPhoto };
       // setData(insertData);
 
       // 2nd appro.
-       let val = {
-         ...insertData,
-         receipt: {
-           value: receiptPhoto,
-         },
-       };
-      //  console.log(val);
-       setData(val)
+
+      setData((prev) => ({
+        ...prev,
+        receipt: {
+          ...prev.receipt,
+          value: receiptPhoto,
+        },
+      }));
     });
-console.log(insertData);
-   console.log(data);
+    setSubmit(true);
+  };
+  console.log(data);
+  useEffect(() => {
+    if (submit === true) {
+      if (localStorage.getItem("transactionForm")) {
+        const retrivedata = JSON.parse(localStorage.getItem("transactionForm"));
 
-    if (localStorage.getItem("transactionForm")) {
-      const retrivedata = JSON.parse(localStorage.getItem("transactionForm"));
-
-      if (id) {
-        for (const e in retrivedata) {
-          if (parseInt(retrivedata[e].id) === parseInt(id)) {
-            insertData["id"] = id;
-            retrivedata[e] = insertData;
+        if (id) {
+          for (const e in retrivedata) {
+            if (parseInt(retrivedata[e].id) === parseInt(id)) {
+              data["id"] = id;
+              retrivedata[e] = data;
+            }
           }
-        }
-      } else {
-        const prevDataIndex = Object.keys(retrivedata).length - 1;
-        const prevId = retrivedata[prevDataIndex]["id"];
-        insertData["id"] = parseInt(prevId) + 1;
+        } else {
+          const prevDataIndex = Object.keys(retrivedata).length - 1;
+          const prevId = retrivedata[prevDataIndex]["id"];
+          data["id"] = parseInt(prevId) + 1;
 
-        retrivedata.push(insertData);
+          retrivedata.push(data);
+        }
+
+        localStorage.setItem("transactionForm", JSON.stringify(retrivedata));
+      } else {
+        data["id"] = 1;
+
+        localStorage.setItem("transactionForm", JSON.stringify([data]));
       }
 
-      localStorage.setItem("transactionForm", JSON.stringify(retrivedata));
-    } else {
-      insertData["id"] = 1;
-
-      localStorage.setItem("transactionForm", JSON.stringify([insertData]));
+      navigate("/transaction");
     }
-
-    // navigate("/transaction");
-  };
+  }
+  , [data]);
 
   return (
     <>
