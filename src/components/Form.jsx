@@ -67,15 +67,24 @@ const TransactionForm = () => {
         if (value === undefined || value === null || value.length === 0) {
           return error.createError({ message: "image is required!!!" });
         } else {
-          if (!validFileExtensions.includes(value[0].type)) {
-            return error.createError({
-              message: "image type must be jpeg,png,jpg or svg..",
-            });
-          }
-          if (value[0]["size"] > MAX_FILE_SIZE) {
-            return error.createError({ message: "image must less than 10kb" });
-          }
+      if(typeof value === "string"){
+        return true;
+      }else{
+        if (!validFileExtensions.includes(value[0].type)) {
+          return error.createError({
+            message: "image type must be jpeg,png,jpg or svg..",
+          });
         }
+
+      }
+      if (typeof value === "string") {
+        return true;
+      } else {
+        if (value[0]["size"] > MAX_FILE_SIZE) {
+          return error.createError({ message: "image must less than 10kb" });
+        }
+      }
+      }
         return true;
       },
     }),
@@ -84,17 +93,17 @@ const TransactionForm = () => {
     return parseInt(value["id"]) === parseInt(id);
   });
 
-  console.log(dummy[0]);
+  // console.log(dummy[0]);
   let udata = {};
 
   for (let a in dummy[0]) {
     if (dummy[0][a].value !== undefined) {
-      console.log(a, dummy[0][a].value);
+      // console.log(a, dummy[0][a].value);
       udata[a] = dummy[0][a].value;
     }
   }
 
-  console.log(udata);
+  // console.log(udata);
   const {
     register,
     handleSubmit,
@@ -109,12 +118,12 @@ const TransactionForm = () => {
   // useEffect(() => {
   for (let a in dummy[0]) {
     if (dummy[0][a].value !== undefined) {
-      console.log(a, dummy[0][a].value);
+      // console.log(a, dummy[0][a].value);
 udata[a] = dummy[0][a].value;
       // setValue(a,data[a].value)
     }
   }
-  console.log(udata);
+  // console.log(udata);
   // }, [updateData, setValue]);
 
   useEffect(() => {
@@ -135,7 +144,7 @@ udata[a] = dummy[0][a].value;
     // setValue({receipt  : {value: ""}})
   };
   const onSubmit = (e) => {
-    console.log(e, "mmee");
+    // console.log(e, "mmee");
 
     let {
       monthYear,
