@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useTransactionData } from "../context/transactionTable";
 import {
   MonthArr,
   TransactionTypeArr,
@@ -24,15 +25,21 @@ let info = {
   receipt: {},
   notes: {},
 };
+
 const TransactionForm = () => {
   const { id } = useParams();
   const index = id - 1;
   const updateData = JSON.parse(localStorage.getItem("transactionForm"));
   const [submit, setSubmit] = useState(false);
+  const navigate = useNavigate();
   const [data, setData] = useState(info);
 
-  const navigate = useNavigate();
+  // context data
+  const { transactionData, setTransactionData } = useTransactionData();
+  console.log("data");
+  console.log(transactionData);
 
+  //
   // YUP VALIDATIONS...
 
   const formSchema = yup.object().shape({
@@ -67,24 +74,25 @@ const TransactionForm = () => {
         if (value === undefined || value === null || value.length === 0) {
           return error.createError({ message: "image is required!!!" });
         } else {
-      if(typeof value === "string"){
-        return true;
-      }else{
-        if (!validFileExtensions.includes(value[0].type)) {
-          return error.createError({
-            message: "image type must be jpeg,png,jpg or svg..",
-          });
+          if (typeof value === "string") {
+            return true;
+          } else {
+            if (!validFileExtensions.includes(value[0].type)) {
+              return error.createError({
+                message: "image type must be jpeg,png,jpg or svg..",
+              });
+            }
+          }
+          if (typeof value === "string") {
+            return true;
+          } else {
+            if (value[0]["size"] > MAX_FILE_SIZE) {
+              return error.createError({
+                message: "image must less than 10kb",
+              });
+            }
+          }
         }
-
-      }
-      if (typeof value === "string") {
-        return true;
-      } else {
-        if (value[0]["size"] > MAX_FILE_SIZE) {
-          return error.createError({ message: "image must less than 10kb" });
-        }
-      }
-      }
         return true;
       },
     }),
@@ -119,7 +127,7 @@ const TransactionForm = () => {
   for (let a in dummy[0]) {
     if (dummy[0][a].value !== undefined) {
       // console.log(a, dummy[0][a].value);
-udata[a] = dummy[0][a].value;
+      udata[a] = dummy[0][a].value;
       // setValue(a,data[a].value)
     }
   }
@@ -212,7 +220,8 @@ udata[a] = dummy[0][a].value;
       },
     }));
 
-    setData(data);
+    // setData(data);
+    setTransactionData(data); // context data
 
     setSubmit(true);
   };
@@ -236,8 +245,9 @@ udata[a] = dummy[0][a].value;
 
   useEffect(() => {
     if (submit) {
-      if (localStorage.getItem("transactionForm")) {
-        const retrivedata = JSON.parse(localStorage.getItem("transactionForm"));
+      // if (localStorage.getItem("transactionForm"))
+      if (transactionData) {
+        const retrivedata = transactionData;
 
         if (id) {
           for (const e in retrivedata) {
@@ -253,12 +263,11 @@ udata[a] = dummy[0][a].value;
 
           retrivedata.push(data);
         }
-
-        localStorage.setItem("transactionForm", JSON.stringify(retrivedata));
+        setTransactionData(retrivedata);
+        // localStorage.setItem("transactionForm", JSON.stringify(retrivedata));
       } else {
-        data["id"] = 1;
-
-        localStorage.setItem("transactionForm", JSON.stringify([data]));
+        // data["id"] = 1;
+        // localStorage.setItem("transactionForm", JSON.stringify([data]));
       }
 
       navigate("/transaction");
