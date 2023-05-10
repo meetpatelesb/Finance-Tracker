@@ -14,13 +14,22 @@ import { Dropdown } from "./Dropdown";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-
+let info = {
+  monthYear: {},
+  transactionDate: {},
+  transactionType: {},
+  fromAccount: {},
+  toAccount: {},
+  transactionAmount: {},
+  receipt: {},
+  notes: {},
+};
 const TransactionForm = () => {
   const { id } = useParams();
   const index = id - 1;
   const updateData = JSON.parse(localStorage.getItem("transactionForm"));
   const [submit, setSubmit] = useState(false);
-  const [data, setData] = useState({});
+  const [data, setData] = useState(info);
 
   const navigate = useNavigate();
 
@@ -71,7 +80,21 @@ const TransactionForm = () => {
       },
     }),
   });
+  let dummy = updateData.filter((value) => {
+    return parseInt(value["id"]) === parseInt(id);
+  });
 
+  console.log(dummy[0]);
+  let udata = {};
+
+  for (let a in dummy[0]) {
+    if (dummy[0][a].value !== undefined) {
+      console.log(a, dummy[0][a].value);
+      udata[a] = dummy[0][a].value;
+    }
+  }
+
+  console.log(udata);
   const {
     register,
     handleSubmit,
@@ -79,9 +102,20 @@ const TransactionForm = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(formSchema),
+    defaultValues: udata,
   });
-
   // ......
+
+  // useEffect(() => {
+  for (let a in dummy[0]) {
+    if (dummy[0][a].value !== undefined) {
+      console.log(a, dummy[0][a].value);
+udata[a] = dummy[0][a].value;
+      // setValue(a,data[a].value)
+    }
+  }
+  console.log(udata);
+  // }, [updateData, setValue]);
 
   useEffect(() => {
     for (const key in updateData) {
@@ -91,19 +125,18 @@ const TransactionForm = () => {
       }
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   const removeImage = () => {
     setData((prev) => ({
       ...prev,
-      receipt: {
-        ...prev.receipt,
-        value: "",
-      },
+      receipt: "",
     }));
+    // setValue({receipt  : {value: ""}})
   };
   const onSubmit = (e) => {
-    //  console.log(e)
+    console.log(e, "mmee");
+
     let {
       monthYear,
       transactionDate,
@@ -114,20 +147,36 @@ const TransactionForm = () => {
       receipt,
       notes,
     } = e;
+    console.log("submit");
 
-    // const handleChange = (e) => {
-    //   console.log(e);
-    // let freader = new FileReader();
-    // console.log(e?.target?.files[0]);
-    // freader.readAsDataURL(e?.target?.files[0]);
-
-    // freader.addEventListener("load", () => {
-    //   const receiptPhoto = freader.result;
-    //   console.log(receiptPhoto);
-    // });
+    // let insertData = {
+    //   monthYear: {
+    //     value: monthYear,
+    //   },
+    //   transactionDate: {
+    //     value: transactionDate,
+    //   },
+    //   transactionType: {
+    //     value: transactionType,
+    //   },
+    //   fromAccount: {
+    //     value: fromAccount,
+    //   },
+    //   toAccount: {
+    //     value: toAccount,
+    //   },
+    //   transactionAmount: {
+    //     value: transactionAmount,
+    //   },
+    //   receipt:{
+    //     value: data.receipt.value
+    //   },
+    //   notes: {
+    //     value: notes,
+    //   },
     // };
-
-    let insertData = {
+    setData((prev) => ({
+      ...prev,
       monthYear: {
         value: monthYear,
       },
@@ -146,24 +195,25 @@ const TransactionForm = () => {
       transactionAmount: {
         value: transactionAmount,
       },
+      receipt: {
+        value: data.receipt.value,
+      },
       notes: {
         value: notes,
       },
-    };
+    }));
 
-    setData(insertData);
+    setData(data);
 
+    setSubmit(true);
+  };
+  const handleChange = (e) => {
     let receiptPhoto;
-    let file = receipt[0];
+    let file = e.target.files[0];
     let freader = new FileReader();
     freader.readAsDataURL(file);
     freader.addEventListener("load", () => {
       receiptPhoto = freader.result;
-
-      // insertData["receipt"] = { value: receiptPhoto };
-      // setData(insertData);
-
-      // 2nd appro.
 
       setData((prev) => ({
         ...prev,
@@ -173,11 +223,10 @@ const TransactionForm = () => {
         },
       }));
     });
-    setSubmit(true);
   };
-  console.log(data);
+
   useEffect(() => {
-    if (submit === true) {
+    if (submit) {
       if (localStorage.getItem("transactionForm")) {
         const retrivedata = JSON.parse(localStorage.getItem("transactionForm"));
 
@@ -205,8 +254,7 @@ const TransactionForm = () => {
 
       navigate("/transaction");
     }
-  }
-  , [data]);
+  }, [data]);
 
   return (
     <>
@@ -219,10 +267,8 @@ const TransactionForm = () => {
               id="date"
               name="transactionDate"
               {...register("transactionDate")}
-              // value={data.transactionDate.value}
-              // onChange={(e) => {
-              //   DateHandler(e.target.value);
-              // }}
+              // value={data?.transactionDate?.value}
+
               onClick={() => {
                 const newdate = new Date();
                 var year = newdate.getFullYear();
@@ -249,11 +295,7 @@ const TransactionForm = () => {
             <select
               name="monthYear"
               {...register("monthYear")}
-              // value={data.monthYear.value}
-              id=""
-              // onChange={(e) => {
-              //   MonthHandler(e.target.value);
-              // }}
+              // value={data?.monthYear?.value}
             >
               <option value="" selected>
                 Select
@@ -273,10 +315,7 @@ const TransactionForm = () => {
             <select
               name="transactionType"
               {...register("transactionType")}
-              // value={data.transactionType.value}
-              // onChange={(e) => {
-              //   TypeHandler(e.target.value);
-              // }}
+              // value={data?.transactionType?.value}
             >
               <option value="" selected>
                 Select
@@ -292,11 +331,7 @@ const TransactionForm = () => {
             <select
               name="fromAccount"
               {...register("fromAccount")}
-
-              // value={data.fromAccount.value}
-              // onChange={(e) => {
-              //   FromActHandler(e.target.value);
-              // }}
+              // value={data?.fromAccount?.value}
             >
               <option value="" selected>
                 Select
@@ -312,10 +347,7 @@ const TransactionForm = () => {
             <select
               name="toAccount"
               {...register("toAccount")}
-              // value={data.toAccount.value}
-              // onChange={(e) => {
-              //   toActHandler(e.target.value);
-              // }}
+              // value={data?.toAccount?.value}
             >
               <option value="" selected>
                 Select
@@ -331,38 +363,31 @@ const TransactionForm = () => {
               type="text"
               name="transactionAmount"
               {...register("transactionAmount")}
-              // value={data.transactionAmount.value}
-              // onChange={(e) => {
-              //   AmountHandler(e.target.value);
-              // }}
+              // value={data?.transactionAmount?.value}
             ></input>
             <span>{errors.transactionAmount?.message}</span>
           </div>
           <br></br>
           <label className="label">Receipt:</label>
           <div className="input">
-            {
-              // data.receipt.value ? (
-              //   <>
-              //     <img src={data.receipt.value} width={50} height={50} alt="" />
-              //     <span onClick={removeImage} className="cross">
-              //       X
-              //     </span>
-              //   </>
-              // ) :
+            {data.receipt.value ? (
+              <>
+                <img src={data.receipt.value} width={50} height={50} alt="" />
+                <span onClick={removeImage} className="cross">
+                  X
+                </span>
+              </>
+            ) : (
               <>
                 <input
                   type="file"
                   name="receipt"
                   alt="Receipt is not found"
-                  {...register("receipt")}
-                  // value={data.receipt.value}
-                  // onChange={(e) => {
-                  //   ReceiptHandler(e);
-                  // }}
+                  {...register("receipt", { onChange: handleChange })}
+                  // value={data?.receipt?.value}
                 ></input>
               </>
-            }
+            )}
 
             <span>{errors.receipt?.message}</span>
           </div>
@@ -374,11 +399,7 @@ const TransactionForm = () => {
               rows="6"
               name="notes"
               {...register("notes")}
-
-              // value={data.notes.value}
-              // onChange={(e) => {
-              //   NotesHandler(e.target.value);
-              // }}
+              // value={data?.notes?.value}
             ></textarea>
             <span>{errors.notes?.message}</span>
           </div>

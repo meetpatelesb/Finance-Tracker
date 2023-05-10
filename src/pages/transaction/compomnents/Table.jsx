@@ -117,7 +117,8 @@ const Table = (props) => {
           index.toAccount.value.toLowerCase().includes(e.target.value) ||
           index.transactionDate.value.toLowerCase().includes(e.target.value) ||
           index.transactionType.value.toLowerCase().includes(e.target.value) ||
-          index.transactionAmount.value.toLowerCase().includes(e.target.value)
+          // value.toLowerCase()
+          index.transactionAmount.value.toString().includes(e.target.value)
       );
       setSortedData(searchData);
     }
