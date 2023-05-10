@@ -29,15 +29,19 @@ let info = {
 const TransactionForm = () => {
   const { id } = useParams();
   const index = id - 1;
-  const updateData = JSON.parse(localStorage.getItem("transactionForm"));
+  // const updateData = JSON.parse(localStorage.getItem("transactionForm"));
+  
+    // context data
+    const { transactionData, setTransactionData } = useTransactionData();
+    console.log("data");
+    console.log(transactionData);
+
+
+    
+  const updateData =  transactionData;
   const [submit, setSubmit] = useState(false);
   const navigate = useNavigate();
   const [data, setData] = useState(info);
-
-  // context data
-  const { transactionData, setTransactionData } = useTransactionData();
-  console.log("data");
-  console.log(transactionData);
 
   //
   // YUP VALIDATIONS...
@@ -221,7 +225,7 @@ const TransactionForm = () => {
     }));
 
     // setData(data);
-    setTransactionData(data); // context data
+    setData(data); // context data
 
     setSubmit(true);
   };

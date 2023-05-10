@@ -5,12 +5,16 @@ import { formatter } from "../../../utils/helper";
 import { MonthArr, paginationCount } from "../../../utils/constant";
 import { Dropdown } from "../../../components/Dropdown";
 import Pagination from "../../../components/Pagination";
+// import { useTransactionData } from "../";
 
 const Table = (props) => {
   let records = props.records;
 
   const [sortedData, setSortedData] = useState(records);
   const [sortedField, setSortedField] = useState({});
+    // const { transactionData, setTransactionData } = useTransactionData();
+    // console.log("data");
+    // console.log(transactionData);
 
   const sorting = (key) => {
     setCurrentPage(1);
