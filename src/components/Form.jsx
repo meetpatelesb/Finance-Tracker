@@ -30,15 +30,13 @@ const TransactionForm = () => {
   const { id } = useParams();
   const index = id - 1;
   // const updateData = JSON.parse(localStorage.getItem("transactionForm"));
-  
-    // context data
-    const { transactionData, setTransactionData } = useTransactionData();
-    console.log("data");
-    console.log(transactionData);
 
+  // context data
+  const { transactionData, setTransactionData } = useTransactionData();
+  console.log("data");
+  console.log(transactionData);
 
-    
-  const updateData =  transactionData;
+  const updateData = transactionData;
   const [submit, setSubmit] = useState(false);
   const navigate = useNavigate();
   const [data, setData] = useState(info);
@@ -102,7 +100,10 @@ const TransactionForm = () => {
     }),
   });
   let dummy = updateData.filter((value) => {
-    return parseInt(value["id"]) === parseInt(id);
+    if (parseInt(value["id"])){
+      
+      return parseInt(value["id"]) === parseInt(id);
+    } 
   });
 
   // console.log(dummy[0]);
@@ -127,16 +128,11 @@ const TransactionForm = () => {
   });
   // ......
 
-  // useEffect(() => {
   for (let a in dummy[0]) {
     if (dummy[0][a].value !== undefined) {
-      // console.log(a, dummy[0][a].value);
       udata[a] = dummy[0][a].value;
-      // setValue(a,data[a].value)
     }
   }
-  // console.log(udata);
-  // }, [updateData, setValue]);
 
   useEffect(() => {
     for (const key in updateData) {
@@ -153,11 +149,8 @@ const TransactionForm = () => {
       ...prev,
       receipt: "",
     }));
-    // setValue({receipt  : {value: ""}})
   };
   const onSubmit = (e) => {
-    // console.log(e, "mmee");
-
     let {
       monthYear,
       transactionDate,
@@ -168,34 +161,7 @@ const TransactionForm = () => {
       receipt,
       notes,
     } = e;
-    console.log("submit");
 
-    // let insertData = {
-    //   monthYear: {
-    //     value: monthYear,
-    //   },
-    //   transactionDate: {
-    //     value: transactionDate,
-    //   },
-    //   transactionType: {
-    //     value: transactionType,
-    //   },
-    //   fromAccount: {
-    //     value: fromAccount,
-    //   },
-    //   toAccount: {
-    //     value: toAccount,
-    //   },
-    //   transactionAmount: {
-    //     value: transactionAmount,
-    //   },
-    //   receipt:{
-    //     value: data.receipt.value
-    //   },
-    //   notes: {
-    //     value: notes,
-    //   },
-    // };
     setData((prev) => ({
       ...prev,
       monthYear: {
@@ -226,7 +192,6 @@ const TransactionForm = () => {
 
     // setData(data);
     setData(data); // context data
-
     setSubmit(true);
   };
   const handleChange = (e) => {
@@ -249,7 +214,6 @@ const TransactionForm = () => {
 
   useEffect(() => {
     if (submit) {
-      // if (localStorage.getItem("transactionForm"))
       if (transactionData) {
         const retrivedata = transactionData;
 

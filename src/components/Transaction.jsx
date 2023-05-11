@@ -28,9 +28,9 @@ const Transaction = () => {
           const item = items[field]?.value;
           groupData[item] = groupData[item] ?? [];
           groupData[item].push(items);
-          setGroupby(groupData);
           console.log(groupData,"GROUPBY DATA");
         });
+        setGroupby(groupData);
       }
     }
   };

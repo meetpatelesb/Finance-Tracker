@@ -5,16 +5,21 @@ import { formatter } from "../../../utils/helper";
 import { MonthArr, paginationCount } from "../../../utils/constant";
 import { Dropdown } from "../../../components/Dropdown";
 import Pagination from "../../../components/Pagination";
+import { useTransactionData } from "../../../context/transactionTable";
 // import { useTransactionData } from "../";
 
 const Table = (props) => {
   let records = props.records;
+  // const { transactionData, setTransactionData } = useTransactionData();
+  // let records = transactionData;      //context data
+  
+  // context data
 
   const [sortedData, setSortedData] = useState(records);
   const [sortedField, setSortedField] = useState({});
-    // const { transactionData, setTransactionData } = useTransactionData();
-    // console.log("data");
-    // console.log(transactionData);
+  // const { transactionData, setTransactionData } = useTransactionData();
+  // console.log("data");
+  // console.log(transactionData);
 
   const sorting = (key) => {
     setCurrentPage(1);
@@ -109,7 +114,7 @@ const Table = (props) => {
   // searching.....
 
   const search = (e) => {
-      setCurrentPage(1);
+    setCurrentPage(1);
     if (e.target.value === "") {
       setSortedData(records);
     } else {
@@ -145,12 +150,40 @@ const Table = (props) => {
   }
   let nThPage = pages.length;
 
+  const pageCount = (e) => {
+    let count = e.target.value;
+    setPostPerPage(count);
+    setCurrentPage(1);
+  };
 
-  const pageCount = (e)=>{
-    let count  = e.target.value;
-    setPostPerPage(count)
-    setCurrentPage(1)
-  }
+  // const deleteData = (id) => {
+  //   console.log(id, "id");
+  //   const deleteData = [...transactionData];
+  //   // console.log(deleteData);
+
+  //   if (id) {
+  //     for (const e in deleteData) {
+  //       // console.log(deleteData);
+  //       if (deleteData[e]){
+  //         if (parseInt(deleteData[e].id)){
+  //           if (parseInt(deleteData[e].id) === parseInt(id)) {
+  //             console.log(deleteData[e]);
+  //             delete deleteData[e];
+  //             console.log(deleteData);
+  //             console.log(Object.values(deleteData).length);
+  //             // setSortedData(deleteData);
+  //             setTransactionData(deleteData);
+  //           }
+  //         }
+  //       }
+  //       //  console.log(deleteData[e]);
+  //     }
+  //     // const delete2 = [...deleteData]
+  //     // console.log(delete2);
+  //     // console.log(deleteData);
+  //     // setSortedData(deleteData)
+  //   }
+  // };
 
   return (
     <>
@@ -215,36 +248,45 @@ const Table = (props) => {
           </th>
           <th>Edit</th>
           <th>Action</th>
+          <th>Delete</th>
         </thead>
         <tbody>
           {paginationData &&
-            paginationData.map((transaction, count) => (
+            paginationData?.map((transaction, count) => (
               <tr>
-                <td>{transaction.transactionDate.value}</td>
-                <td>{transaction.monthYear.value}</td>
-                <td>{transaction.transactionType.value}</td>
-                <td>{transaction.fromAccount.value}</td>
-                <td>{transaction.toAccount.value}</td>
-                <td>{formatter.format(transaction.transactionAmount.value)}</td>
+                <td>{transaction?.transactionDate.value}</td>
+                <td>{transaction?.monthYear.value}</td>
+                <td>{transaction?.transactionType.value}</td>
+                <td>{transaction?.fromAccount.value}</td>
+                <td>{transaction?.toAccount.value}</td>
+                <td>
+                  {formatter?.format(transaction?.transactionAmount.value)}
+                </td>
                 <td>
                   <img
-                    src={transaction.receipt.value}
+                    src={transaction?.receipt.value}
                     width={50}
                     height={50}
                     alt=""
                   />
                 </td>
-                <td>{transaction.notes.value}</td>
+                <td>{transaction?.notes.value}</td>
                 <td>
-                  <Link to={`/create/${transaction.id}`}>Edit</Link>
+                  <Link to={`/create/${transaction?.id}`}>Edit</Link>
                 </td>
                 <td>
                   <Link
-                    to={`/transaction/${transaction.id}`}
+                    to={`/transaction/${transaction?.id}`}
                     className="btn-text"
                   >
                     View
                   </Link>
+                </td>
+                <td>
+                  <i
+                    class="fas fa-trash-alt"
+                    // onClick={() => deleteData(transaction?.id)}
+                  ></i>
                 </td>
               </tr>
             ))}
