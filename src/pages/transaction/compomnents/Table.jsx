@@ -9,14 +9,17 @@ import { useTransactionData } from "../../../context/transactionTable";
 // import { useTransactionData } from "../";
 
 const Table = (props) => {
-  let records = props.records;
-  // const { transactionData, setTransactionData } = useTransactionData();
-  // let records = transactionData;      //context data
+ 
+  const { transactionData, setTransactionData } = useTransactionData();
+      //context data
   
   // context data
 
-  const [sortedData, setSortedData] = useState(records);
+  const [sortedData, setSortedData] = useState(props.records);
   const [sortedField, setSortedField] = useState({});
+  useEffect(() => {
+    setSortedData(props.records);
+  }, [props.records]);
   // const { transactionData, setTransactionData } = useTransactionData();
   // console.log("data");
   // console.log(transactionData);
@@ -38,7 +41,7 @@ const Table = (props) => {
 
   useEffect(() => {
     if (sortedField.direction === "normal") {
-      setSortedData(sortedData);
+      setSortedData(props.records);
     } else if (sortedField.key === "transactionAmount") {
       let newData = [...sortedData];
       if (sortedField.direction === "ascending") {
@@ -116,9 +119,9 @@ const Table = (props) => {
   const search = (e) => {
     setCurrentPage(1);
     if (e.target.value === "") {
-      setSortedData(records);
+      setSortedData(props.records);
     } else {
-      let searchData = records.filter(
+      let searchData = props.records.filter(
         (index) =>
           index.fromAccount.value.toLowerCase().includes(e.target.value) ||
           index.monthYear.value.toLowerCase().includes(e.target.value) ||
@@ -156,34 +159,17 @@ const Table = (props) => {
     setCurrentPage(1);
   };
 
-  // const deleteData = (id) => {
-  //   console.log(id, "id");
-  //   const deleteData = [...transactionData];
-  //   // console.log(deleteData);
 
-  //   if (id) {
-  //     for (const e in deleteData) {
-  //       // console.log(deleteData);
-  //       if (deleteData[e]){
-  //         if (parseInt(deleteData[e].id)){
-  //           if (parseInt(deleteData[e].id) === parseInt(id)) {
-  //             console.log(deleteData[e]);
-  //             delete deleteData[e];
-  //             console.log(deleteData);
-  //             console.log(Object.values(deleteData).length);
-  //             // setSortedData(deleteData);
-  //             setTransactionData(deleteData);
-  //           }
-  //         }
-  //       }
-  //       //  console.log(deleteData[e]);
-  //     }
-  //     // const delete2 = [...deleteData]
-  //     // console.log(delete2);
-  //     // console.log(deleteData);
-  //     // setSortedData(deleteData)
-  //   }
-  // };
+
+  const deleteData = (id) => {
+    const deleteData = [...transactionData];
+    const deletedData = deleteData.filter((value)=>(
+      value.id !== parseInt(id)
+    ))
+    console.log(deletedData);
+    setTransactionData(deletedData)
+  };
+
 
   return (
     <>
@@ -285,7 +271,7 @@ const Table = (props) => {
                 <td>
                   <i
                     class="fas fa-trash-alt"
-                    // onClick={() => deleteData(transaction?.id)}
+                    onClick={() => deleteData(transaction?.id)}
                   ></i>
                 </td>
               </tr>

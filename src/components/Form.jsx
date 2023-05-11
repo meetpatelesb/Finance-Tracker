@@ -214,7 +214,7 @@ const TransactionForm = () => {
 
   useEffect(() => {
     if (submit) {
-      if (transactionData) {
+      if (transactionData.length !== 0 ) {
         const retrivedata = transactionData;
 
         if (id) {
@@ -234,7 +234,8 @@ const TransactionForm = () => {
         setTransactionData(retrivedata);
         // localStorage.setItem("transactionForm", JSON.stringify(retrivedata));
       } else {
-        // data["id"] = 1;
+        data["id"] = 1;
+          setTransactionData(data);
         // localStorage.setItem("transactionForm", JSON.stringify([data]));
       }
 
