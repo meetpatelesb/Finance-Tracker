@@ -20,7 +20,7 @@ const Auth = () => {
       {token && (
         <Routes>
           <Route path="/create" element={<TransactionForm />} />
-          <Route path="/create/:id" element={<TransactionForm />} />
+          <Route path="/edit/:id" element={<TransactionForm />} />
           <Route path="/transaction" element={<Transaction />} />
           <Route path="/transaction/:id" element={<View />} />
           <Route path="/*" element={<Navigate to="/transaction" replace />} />

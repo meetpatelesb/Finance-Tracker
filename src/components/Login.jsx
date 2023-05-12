@@ -1,6 +1,6 @@
 import "../assets/styles/login.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect, React } from "react";
+import { useState, React } from "react";
 import { result } from "../utils/helper";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";

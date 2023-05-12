@@ -6,13 +6,15 @@ import { MonthArr, paginationCount } from "../../../utils/constant";
 import { Dropdown } from "../../../components/Dropdown";
 import Pagination from "../../../components/Pagination";
 import { useTransactionData } from "../../../context/transactionTable";
+import toast, { Toaster } from "react-hot-toast";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 // import { useTransactionData } from "../";
 
 const Table = (props) => {
- 
   const { transactionData, setTransactionData } = useTransactionData();
-      //context data
-  
+  //context data
+
   // context data
 
   const [sortedData, setSortedData] = useState(props.records);
@@ -34,7 +36,7 @@ const Table = (props) => {
     ) {
       direction = "normal";
     }
-    console.log(key,direction,">>>>>>>>>>>>>>>>");
+    console.log(key, direction, ">>>>>>>>>>>>>>>>");
     setSortedField({ key, direction });
   };
 
@@ -107,7 +109,7 @@ const Table = (props) => {
           return sortedField.direction === "ascending" ? 1 : -1;
         }
         setSortedData(newData);
-        console.log(newData);
+        // console.log(newData);
         return 0;
       });
     }
@@ -143,7 +145,7 @@ const Table = (props) => {
 
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
-    let pagiData = [...sortedData];
+  let pagiData = [...sortedData];
   const paginationData = pagiData.slice(firstPostIndex, lastPostIndex);
 
   let totalPosts = pagiData.length;
@@ -159,27 +161,36 @@ const Table = (props) => {
     setCurrentPage(1);
   };
 
-
-
   const deleteData = (id) => {
+    differ();
     const deleteData = [...transactionData];
-    const deletedData = deleteData.filter((value)=>(
-      value.id !== parseInt(id)
-    ))
-    setTransactionData(deletedData)
-    setCurrentPage(1)
+    const deletedData = deleteData.filter((value) => value.id !== parseInt(id));
+    setTransactionData(deletedData);
+    setCurrentPage(1);
   };
 
+  const differ = () => {
+    toast.success("delete successfully!!", {
+      // position: "top-center",
+      // autoClose: 1000,
+      // hideProgressBar: false,
+      // pauseOnHover: true,
+      // draggable: true,
+      // progress: undefined,
+      // theme: "dark",
+    });
+  };
 
   return (
     <>
+      <Toaster />
+
       <input
         type="text"
         onChange={search}
         placeholder="Search here"
         className="search"
       ></input>
-
       <table>
         <thead>
           <th
@@ -258,7 +269,7 @@ const Table = (props) => {
                 </td>
                 <td>{transaction?.notes.value}</td>
                 <td>
-                  <Link to={`/create/${transaction?.id}`}>Edit</Link>
+                  <Link to={`/edit/${transaction?.id}`}>Edit</Link>
                 </td>
                 <td>
                   <Link
@@ -278,7 +289,6 @@ const Table = (props) => {
             ))}
         </tbody>
       </table>
-
       <label>Post Per Page:</label>
       <select
         className="page-count"
@@ -288,7 +298,6 @@ const Table = (props) => {
       >
         <Dropdown for={paginationCount} />
       </select>
-
       <Pagination
         paginationRecords={sortedData}
         currentPage={currentPage}

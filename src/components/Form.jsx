@@ -114,7 +114,6 @@ const TransactionForm = () => {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(formSchema),
@@ -237,6 +236,7 @@ const TransactionForm = () => {
 
       navigate("/transaction");
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return (
