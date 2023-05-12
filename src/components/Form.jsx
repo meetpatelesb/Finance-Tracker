@@ -32,10 +32,7 @@ const TransactionForm = () => {
   // const updateData = JSON.parse(localStorage.getItem("transactionForm"));
 
   // context data
-  const { transactionData, setTransactionData } = useTransactionData();
-  console.log("data");
-  console.log(transactionData);
-
+  const { transactionData, setTransactionData } = useTransactionData([]);
   const updateData = transactionData;
   const [submit, setSubmit] = useState(false);
   const navigate = useNavigate();
@@ -66,6 +63,7 @@ const TransactionForm = () => {
     notes: yup
       .string()
       .min(3)
+      .trim()
       .max(250)
       .required()
       .typeError("notes is required!!"),
@@ -100,23 +98,19 @@ const TransactionForm = () => {
     }),
   });
   let dummy = updateData.filter((value) => {
-    if (parseInt(value["id"])){
-      
+    if (parseInt(value["id"])) {
       return parseInt(value["id"]) === parseInt(id);
-    } 
+    }
   });
 
-  // console.log(dummy[0]);
   let udata = {};
 
   for (let a in dummy[0]) {
     if (dummy[0][a].value !== undefined) {
-      // console.log(a, dummy[0][a].value);
       udata[a] = dummy[0][a].value;
     }
   }
 
-  // console.log(udata);
   const {
     register,
     handleSubmit,
@@ -214,7 +208,7 @@ const TransactionForm = () => {
 
   useEffect(() => {
     if (submit) {
-      if (transactionData.length !== 0 ) {
+      if (transactionData.length !== 0) {
         const retrivedata = transactionData;
 
         if (id) {
@@ -227,15 +221,17 @@ const TransactionForm = () => {
         } else {
           const prevDataIndex = Object.keys(retrivedata).length - 1;
           const prevId = retrivedata[prevDataIndex]["id"];
-          data["id"] = parseInt(prevId) + 1;
+          data["id"] = parseInt(parseInt(prevId) + 1);
 
           retrivedata.push(data);
         }
         setTransactionData(retrivedata);
         // localStorage.setItem("transactionForm", JSON.stringify(retrivedata));
       } else {
-        data["id"] = 1;
-          setTransactionData(data);
+        data["id"] = parseInt(1);
+        // transactionData.push(data);   //secong approach
+        setTransactionData((prev) => [...prev, data]);
+
         // localStorage.setItem("transactionForm", JSON.stringify([data]));
       }
 

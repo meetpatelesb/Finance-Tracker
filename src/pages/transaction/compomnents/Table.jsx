@@ -21,8 +21,6 @@ const Table = (props) => {
     setSortedData(props.records);
   }, [props.records]);
   // const { transactionData, setTransactionData } = useTransactionData();
-  // console.log("data");
-  // console.log(transactionData);
 
   const sorting = (key) => {
     setCurrentPage(1);
@@ -36,6 +34,7 @@ const Table = (props) => {
     ) {
       direction = "normal";
     }
+    console.log(key,direction,">>>>>>>>>>>>>>>>");
     setSortedField({ key, direction });
   };
 
@@ -108,6 +107,7 @@ const Table = (props) => {
           return sortedField.direction === "ascending" ? 1 : -1;
         }
         setSortedData(newData);
+        console.log(newData);
         return 0;
       });
     }
@@ -143,7 +143,7 @@ const Table = (props) => {
 
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
-  let pagiData = [...sortedData];
+    let pagiData = [...sortedData];
   const paginationData = pagiData.slice(firstPostIndex, lastPostIndex);
 
   let totalPosts = pagiData.length;
@@ -166,8 +166,8 @@ const Table = (props) => {
     const deletedData = deleteData.filter((value)=>(
       value.id !== parseInt(id)
     ))
-    console.log(deletedData);
     setTransactionData(deletedData)
+    setCurrentPage(1)
   };
 
 
