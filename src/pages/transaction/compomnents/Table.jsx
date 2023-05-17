@@ -5,14 +5,14 @@ import { formatter } from "../../../utils/helper";
 import { MonthArr, paginationCount } from "../../../utils/constant";
 import { Dropdown } from "../../../components/Dropdown";
 import Pagination from "../../../components/Pagination";
-import { useTransactionData } from "../../../context/transactionTable";
+// import { useTransactionData } from "../../../context/transactionTable";
 import toast, { Toaster } from "react-hot-toast";
 // import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 // import { useTransactionData } from "../";
 
 const Table = (props) => {
-  const { transactionData, setTransactionData } = useTransactionData();
+  const [ transactionData, setTransactionData ] = useState(props.records);
   //context data
 
   // context data
@@ -161,25 +161,7 @@ const Table = (props) => {
     setCurrentPage(1);
   };
 
-  const deleteData = (id) => {
-    differ();
-    const deleteData = [...transactionData];
-    const deletedData = deleteData.filter((value) => value.id !== parseInt(id));
-    setTransactionData(deletedData);
-    setCurrentPage(1);
-  };
 
-  const differ = () => {
-    toast.success("delete successfully!!", {
-      // position: "top-center",
-      // autoClose: 1000,
-      // hideProgressBar: false,
-      // pauseOnHover: true,
-      // draggable: true,
-      // progress: undefined,
-      // theme: "dark",
-    });
-  };
 
   return (
     <>
@@ -245,7 +227,7 @@ const Table = (props) => {
           </th>
           <th>Edit</th>
           <th>Action</th>
-          <th>Delete</th>
+         
         </thead>
         <tbody>
           {paginationData &&
@@ -279,12 +261,7 @@ const Table = (props) => {
                     View
                   </Link>
                 </td>
-                <td>
-                  <i
-                    class="fas fa-trash-alt"
-                    onClick={() => deleteData(transaction?.id)}
-                  ></i>
-                </td>
+               
               </tr>
             ))}
         </tbody>

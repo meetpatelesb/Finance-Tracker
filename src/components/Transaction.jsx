@@ -3,29 +3,20 @@ import { useState } from "react";
 import Table from "../pages/transaction/compomnents/Table";
 import { Dropdown } from "../components/Dropdown";
 import { groupArr } from "../utils/constant";
-import { useTransactionData } from "../context/transactionTable";
-import { useEffect } from "react";
+
 
 const Transaction = () => {
   const navigate = useNavigate();
-  const { transactionData, setTransactionData } = useTransactionData();
 
+  
+ const transactionData = JSON.parse(localStorage.getItem("transactionForm"));
   const [transactionDatas,setTransactionDatas]=useState(transactionData);
-  // const retrivedata = [...transactionDatas;
   const [groupby, setGroupby] = useState({});
 
-  useEffect(() => {
-    console.log("transa>>>>>>");
-    console.log(transactionData);
-    setTransactionDatas(transactionData);
-  }, [transactionData]);
+  
 
   const [groupVal, setGroupVal] = useState("");
 
-  useEffect(() => {
-    console.log("render effect");
-    groupBy(groupVal);
-  }, [transactionDatas]);
 
   const groupBy = (e) => {
     const gData = [...transactionDatas];

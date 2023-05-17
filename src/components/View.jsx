@@ -1,15 +1,15 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useTransactionData } from "../context/transactionTable";
+
 import { formatter } from "../utils/helper";
 const View = () => {
   const { id } = useParams();
   // params give id no. but we need index to fetch data
   const index = id - 1;
- const { transactionData } = useTransactionData();
-  // const retrivedata = JSON.parse(localStorage.getItem("transactionForm"));
-    const retrivedata = transactionData  ;
+
+  const retrivedata = JSON.parse(localStorage.getItem("transactionForm"));
+
   return (
     <>
       <div className="container-fluid">

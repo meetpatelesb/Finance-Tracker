@@ -1,49 +1,55 @@
 import "../assets/styles/transaction.css";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const Registration = () => {
   const navigate = useNavigate();
-  let [regData, setRegData] = useState({
+  const [regData, setRegData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
+  const [error, setError] = useState({});
   const [issubmit, setIsSubmit] = useState(false);
 
-  // YUP VALIDATIONS...
+  const hasChange = (e) => {
+    const { name, value } = e.target;
 
-  const formSchema = yup.object().shape({
-    name: yup.string().required("Your name is required!!"),
-    email: yup.string().email().required(),
-    password: yup.string().min(5).max(12).required(),
-    cpassword: yup
-      .string()
-      .oneOf([yup.ref("password"), null], "Password is not matched!!")
-      .required(),
-  });
+    setRegData((prev) => {
+      return { ...prev, [name]: value };
+    });
+    setError(validate(regData));
+  };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(formSchema),
-  });
+  const validate = (regData) => {
+    const error = {};
+    const regex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
 
-  // ......
+    if (regData["name"].trim().length <= 3) {
+      error.name = "name is required";
+    }
 
-  const onSubmit = (e) => {
-     regData = { ...e };
-    delete regData.cpassword;
-    setRegData(regData);
+    if (!regex.test(regData["email"])) {
+      error.email = "email is required";
+
+      if (regData["password"].length <= 4) {
+        error.password = "password is required";
+      }
+    }
+    return error;
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    hasChange(e);
+    setError(validate(regData));
     setIsSubmit(true);
-    if (Object.values(e).length && issubmit===true) {
+    if (Object.keys(error).length === 0 && issubmit === true) {
+      console.log("submit");
+
       if (localStorage.getItem("registration")) {
         const retrivedata = JSON.parse(localStorage.getItem("registration"));
         let lastIdIndex = Object.keys(retrivedata).length - 1;
@@ -64,42 +70,37 @@ const Registration = () => {
     <>
       <div className="form">
         <h2>Registration Form</h2>
-        <form onSubmit={handleSubmit(onSubmit)} method="POST">
+        <form onSubmit={submitHandler} method="POST">
           <label className="label">Name:</label>
           <input
             type="text"
             name="name"
             className="inputFields"
-            {...register("name")}
+            value={regData.name}
+            onChange={(e) => hasChange(e)}
           ></input>
-          <span>{errors.name?.message}</span>
+          <span>{error.name}</span>
           <br></br>
           <label className="label">Email:</label>
           <input
             type="email"
             name="email"
             className="inputFields"
-            {...register("email")}
-          ></input>
-          <span>{errors.email?.message}</span>
+            value={regData.email}
+            onChange={(e) => hasChange(e)}
+          ></input>{" "}
+          <span>{error.email}</span>
           <br></br>
           <label className="label">Password:</label>
           <input
             type="password"
             name="password"
             className="pswFields"
-            {...register("password")}
+            value={regData.password}
+            onChange={(e) => hasChange(e)}
           ></input>
-          <span>{errors.password?.message}</span>
-          <br></br>
-          <label className="label">CPassword:</label>
-          <input
-            type="password"
-            name="cpassword"
-            className="pswFields"
-            {...register("cpassword")}
-          ></input>
-          <span>{errors.cpassword?.message}</span>
+          <span>{error.password}</span>
+          <span>{error.regEmail}</span>
           <br></br>
           <button type="submit" className="ViewBtn">
             Submit
